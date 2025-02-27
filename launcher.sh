@@ -10,12 +10,25 @@ Purple="\033[1;35m"
 Cyan="\033[1;36m"        
 White="\033[1;37m"       
 
-# Update and install necessary packages
-apt-get update
-apt-get upgrade
-apt-get install python
-apt-get install python2
-apt-get install vsftpd
+# Function to install required packages
+install_dependencies() {
+    echo -e "$Green Installing required packages...$Reset"
+    apt-get update
+    apt-get install -y python wget openjdk-17 openssh vsftpd
+}
+
+# Function to check if a package is installed
+is_installed() {
+    dpkg -l | grep -qw "$1"
+}
+
+# Check and install dependencies
+for package in python wget openjdk-17 openssh vsftpd; do
+    if ! is_installed "$package"; then
+        install_dependencies
+        break
+    fi
+done
 
 clear
 echo -e "$Purple drmatoi/minecraft  v2.0  is launching... \e[1;34m"
@@ -24,8 +37,8 @@ clear
 echo -e "$Red      
 
   ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⢀⣀⡿⠿⠿⠿⠿⠿⠿⠿⣀⣀⣀⣀⣀⡀⠀⠀
-⠀⠀⠀⠀⠀⠀⠸⠿⣇⣀⣀⣀⣀⣀⣀⣸⠿⢿⣿⣿⣿⡇⠀⠀Host a Minecraft Server using Android - With Termux
+⠀⠀⠀⠀⠀⠀⢀⣀⡿⠿⠿⠿⠿⠿⠿⠿⣀⣀⣀⣀⣀⣀⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⠸⠿⣇⣀⣀⣀⣀⣀⣀⣸⠿⢿⣿⣿⣿⡇⠀⠀⠀⠀Host a Minecraft Server using Android - With Termux
 ⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⠿⠿⠿⠿⠿⣿⣿⣀⡸⠿⢿⣿⡇⠀⠀ github.com/drmatoi/minecraft Version 2.0.0
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⣿⣿⣿⣧⣤⡼⠿⢧⣤⡀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⣿⣿⣿⣿⠛⢻⣿⡇⠀⢸⣿⡇
@@ -53,7 +66,8 @@ echo -e " $Green     ||             $Purple==>$Yellow[6] Uninstall Launcher$Gree
 echo -e " $Green     ||             $Purple==>$Yellow[7] About$Green                                          "
 echo -e " $Green     ||             $Purple==>$Yellow[8] Edit Configuration Files$Green                      "
 echo -e " $Green     ||             $Purple==>$Yellow[9] Enable FTP/SFTP Access$Green                      "
-echo -e " $Green     ||             $Purple==>$Yellow[10] Exit$Green                                           "
+echo -e " $Green     ||             $Purple==>$Yellow[10] Backup Server Files$Green                      "
+echo -e " $Green     ||             $Purple==>$Yellow[11] Exit$Green                                           "
 echo -e " $Green     ||             $Purple==>$Yellow[999] Reset/Update Launcher$Green                                           "
 echo -e " $Green     ||                                                                   "                                                                                       
 echo -e " $Green     ||---------------------------$Cyan [select option] $Green-----------------------||"
@@ -63,12 +77,6 @@ echo " "
 
 read ch
 if [ $ch -eq 1 ];then
-    pkg install openjdk-17
-    pkg install wget
-    pkg install openssh
-    sshd
-    passwd
-
     cd ~/
     mkdir drmatoi_minecrafthost && cd drmatoi_minecrafthost
 
@@ -166,6 +174,17 @@ elif [ $ch -eq 9 ]; then
     exit
 
 elif [ $ch -eq 10 ]; then
+    # Backup server files
+    echo -e "$Green Backing up server files...$Reset"
+    backup_dir="$HOME/minecraft_backup_$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$backup_dir"
+    
+    cp -r $HOME/drmatoi_minecrafthost/* "$backup_dir/"
+    
+    echo -e "$Green Backup completed. Files are saved in: $backup_dir$Reset"
+    exit
+
+elif [ $ch -eq 11 ]; then
     exit
 
 else

@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 # colour 
 Black="\033[1;30m"       # Black
@@ -18,7 +18,7 @@ clear
 echo -e "$Purple drmatoi/minecraft  v2.0  is launching... \e[1;34m"
 sleep 3.2
 clear
-  echo -e "$Red      
+echo -e "$Red      
 
   ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⢀⣀⡿⠿⠿⠿⠿⠿⠿⢿⣀⣀⣀⣀⣀⡀⠀⠀
@@ -35,17 +35,16 @@ clear
 ⠀⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
   \033[0m"
 
-
-    echo " "
-    echo -e "$Red                               ⫸$Purple Made by M4T01 $Red ⫷\033[0m"
+echo " "
+echo -e "$Red                               ⫸$Purple Made by M4T01 $Red ⫷\033[0m"
 echo " "
 echo -e " $Green     |---------------------------------------------------------------------|"
 echo -e " $Green     ||----------------------------$Cyan [List] $Green---------------------------||"
 echo -e " $Green     ||                                                                   "
-echo -e " $Green     ||             $Purple==>$Yellow[1] SETUP Server - 4GB RAM$Green                    "
-echo -e " $Green     ||             $Purple==>️$Yellow[2] START Server - 4GB RAM$Green                       "
+echo -e " $Green     ||             $Purple==>$Yellow[1] SETUP Waterfall Server - 4GB RAM$Green                    "
+echo -e " $Green     ||             $Purple==>️$Yellow[2] START Waterfall Server - 4GB RAM$Green                       "
 echo -e " $Green     ||             $Purple==>$Yellow[3] STOP Server$Green                            "
-echo -e " $Green     ||             $Purple==>$Yellow[4] Server IP adress$Green               "
+echo -e " $Green     ||             $Purple==>$Yellow[4] Server IP address$Green               "
 echo -e " $Green     ||             $Purple==>$Yellow[5] SERVER UP-Time$Green                                  "
 echo -e " $Green     ||             $Purple==>$Yellow[6] Uninstall Launcher$Green                                  "
 echo -e " $Green     ||             $Purple==>$Yellow[7] About$Green                                          "
@@ -58,96 +57,82 @@ echo -e " $Green     |----------------------------------------------------------
 echo " "
 echo " "
 
-    read ch
-   if [ $ch -eq 1 ];then
-        pkg install openjdk-17
+read ch
+if [ $ch -eq 1 ];then
+    pkg install openjdk-17
+    pkg install wget
+    pkg install openssh
+    sshd
+    passwd
 
-pkg install wget
+    cd ~/
+    mkdir drmatoi_minecrafthost && cd drmatoi_minecrafthost
 
-pkg install openssh
+    # Download Waterfall
+    wget -O waterfall.jar https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/waterfall-*.jar
 
-sshd
+    chmod +x waterfall.jar
+    echo eula=true > eula.txt
 
-passwd
+    echo -e "$Green Waterfall server setup complete. You can now start the server.$Reset"
+    exit
 
-cd ~/
+elif [ $ch -eq 2 ];then 
+    while true
+    do
+        java -Xms4G -Xmx4G -jar waterfall.jar
+        sleep 1 
+    done
+    exit
 
-mkdir drmatoi_minecrafthost && drmatoi_minecrafthost
+elif [ $ch -eq 3 ];then
+    # Stopping the server
+    echo -e "$Red Stopping the server...$Reset"
+    pkill -f waterfall.jar
+    exit
 
-cd drmatoi_minecrafthost
+elif [ $ch -eq 4 ];then
+    apt-get install python3
+    git clone https://github.com/drmatoi/M4T01Picker.git
+    cd M4T01Picker
+    python3 ipicker.py
+    exit
 
-wget -O server.jar https://launcher.mojang.com/v1/objects/bb2b6b1aefcd70dfd1892149ac3a215f6c636b07/server.jar
+elif [ $ch -eq 5 ];then
+    echo -e "\e[1;34m The server is online as long as: The device on which it is running is connected to the Internet,
+    there is enough memory and RAM, Termux is open and the script is not terminated.
+    Yes the Server can crash. Should it start again automatically?
+    POSSIBLE! Create before launching a new file with nano alwaysonline.sh, put the script from this GitHub, and save it with [STRG + X] 
+    Now launch the Server with ./alwaysonline.sh. This will check the up-time of the server and relaunch it when it's offline."
+    cd $HOME
+    exit
 
-chmod +x server.jar
+elif [ $ch -eq 999 ];then
+    rm -rf minecraft
+    git clone https://github.com/drmatoi/minecraft
+    cd minecraft
+    chmod +x launcher.sh
+    ./launcher.sh
+    exit
 
- echo eula=true > eula.txt
+elif [ $ch -eq 6 ];then 
+    cd $HOME
+    rm -rf drmatoi_minecrafthost
+    exit
 
-java -Xmx4G -Xms4G -jar server.jar nogui
-
-        exit
-    elif [ $ch -eq 2 ];then 
-         
- while true
-do
-java -Xms4G -Xmx4G -jar server.jar 
-sleep 1 
-done
-        
-        exit
-    elif [ $ch -eq 3 ];then
-        /stop
-
-        exit
-    elif [ $ch -eq 4 ];then
-        apt-get install python3
-
-git clone https://github.com/drmatoi/M4T01Picker.git
-
-cd M4T01Picker
-
-python3 ipicker.py
-
-        exit
-    elif [ $ch -eq 5 ];then
-        echo -e "\e[1;34m The server is online as long as: The device on which it is running is connected to the Internet,
-        there is enough memory and RAM, Termux is open and the script is not terminated.
-Yes the Server can crash. Should it start again automatically?
-POSSIBLE! Create before launching a new file with nano alwaysonline.sh put the skript from this github and save it with [STRG + X] 
-Now launch the Server with ./alwaysonline.sh This will check the up-time of the server and relaunch it when its offline."
-
-        cd $HOME
-
-        exit
-   elif [ $ch -eq 999 ];then
- rm -rf minecraft
-git clone https://github.com/drmatoi/minecraft
-cd minecraft
-chmod +x launcher.sh
-./launcher.sh
-     
-        exit
-   elif [ $ch -eq 6 ];then 
-        cd $HOME
-        rm -rf minecraft
-        
-        exit
-   elif [ $ch -eq 7 ];then
-        echo -e "$Cyan How to Host a Minecraft Server on Android
-A script for Termux that makes it possible to host a Minecraft server via your Android phone. This script requires Termux (Updated F-Droid Version) and a bit of time :)
-Install skript and UP-Time skript are mady by M4T01.
-YOU CAN NOT USE THIS ON ANDROID 11 - SORRY! \e[1;36m"
-        cd $HOME
-
-        exit
+elif [ $ch -eq 7 ];then
+    echo -e "$Cyan How to Host a Minecraft Server on Android
+    A script for Termux that makes it possible to host a Minecraft server via your Android phone. This script requires Termux (Updated F-Droid Version) and a bit of time :)
+    Install script and UP-Time script are made by M4T01.
+    YOU CANNOT USE THIS ON ANDROID 11 - SORRY! \e[1;36m"
+    cd $HOME
+    exit
 
 elif [ $ch -eq 9 ];then
-        $termux-open-url https://t.me/drmatoi
-  
+    $termux-open-url https://t.me/drmatoi
+    exit
 
-        exit
-        
-    else
-        echo -e "\e[4;32m Invalid Input !!! \e[0m"
-        pause
-    fi
-done
+else
+    echo -e "\e[4;32m Invalid Input !!! \e[0m"
+    pause
+fi

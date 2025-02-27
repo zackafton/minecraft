@@ -9,6 +9,7 @@ Blue="\033[1;34m"
 Purple="\033[1;35m"      
 Cyan="\033[1;36m"        
 White="\033[1;37m"       
+Reset="\033[0m"
 
 # Function to install required packages
 install_dependencies() {
@@ -34,7 +35,7 @@ clear
 echo -e "$Purple drmatoi/minecraft  v2.0  is launching... \e[1;34m"
 sleep 3.2
 clear
-echo -e "$Red      
+echo -e "$Red
 
   ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⢀⣀⡿⠿⠿⠿⠿⠿⠿⠿⣀⣀⣀⣀⣀⣀⡀⠀⠀
@@ -96,7 +97,7 @@ if [ $ch -eq 1 ];then
     exit
 
 elif [ $ch -eq 2 ];then 
-    # Start the server
+    # Start the server using waterfall.jar
     while true
     do
         java -Xms4G -Xmx4G -jar waterfall.jar

@@ -1,19 +1,22 @@
 #!/bin/bash
 
-# colour 
-Black="\033[1;30m"       # Black
-Red="\033[1;31m"         # Red
-Green="\033[1;32m"       # Green
-Yellow="\033[1;33m"      # Yellow
-Blue="\033[1;34m"        # Blue
-Purple="\033[1;35m"      # Purple
-Cyan="\033[1;36m"        # Cyan
-White="\033[1;37m"       # White
+# Colour definitions
+Black="\033[1;30m"       
+Red="\033[1;31m"         
+Green="\033[1;32m"       
+Yellow="\033[1;33m"      
+Blue="\033[1;34m"        
+Purple="\033[1;35m"      
+Cyan="\033[1;36m"        
+White="\033[1;37m"       
 
+# Update and install necessary packages
 apt-get update
 apt-get upgrade
 apt-get install python
 apt-get install python2
+apt-get install vsftpd
+
 clear
 echo -e "$Purple drmatoi/minecraft  v2.0  is launching... \e[1;34m"
 sleep 3.2
@@ -21,9 +24,9 @@ clear
 echo -e "$Red      
 
   ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⢀⣀⡿⠿⠿⠿⠿⠿⠿⢿⣀⣀⣀⣀⣀⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⢀⣀⡿⠿⠿⠿⠿⠿⠿⠿⣀⣀⣀⣀⣀⡀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠸⠿⣇⣀⣀⣀⣀⣀⣀⣸⠿⢿⣿⣿⣿⡇⠀⠀Host a Minecraft Server using Android - With Termux
-⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⠿⠿⠿⠿⣿⣿⣀⡸⠿⢿⣿⡇⠀⠀ github.com/drmatoi/minecraft Version 2.0.0
+⠀⠀⠀⠀⠀⠀⠀⠀⠻⠿⠿⠿⠿⠿⠿⣿⣿⣀⡸⠿⢿⣿⡇⠀⠀ github.com/drmatoi/minecraft Version 2.0.0
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⣿⣿⣿⣧⣤⡼⠿⢧⣤⡀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⣿⣿⣿⣿⠛⢻⣿⡇⠀⢸⣿⡇
 ⠀⠀⠀⠀⠀⠀⠀⠀⣤⣤⣿⣿⣿⣿⠛⠛⠀⢸⣿⡇⠀⢸⣿⡇
@@ -48,8 +51,9 @@ echo -e " $Green     ||             $Purple==>$Yellow[4] Server IP address$Green
 echo -e " $Green     ||             $Purple==>$Yellow[5] SERVER UP-Time$Green                                  "
 echo -e " $Green     ||             $Purple==>$Yellow[6] Uninstall Launcher$Green                                  "
 echo -e " $Green     ||             $Purple==>$Yellow[7] About$Green                                          "
-echo -e " $Green     ||             $Purple==>$Yellow[8] Exit$Green                                           "
-echo -e " $Green     ||             $Purple==>$Yellow[9] Report Problems to my Telegram$Green                                        "
+echo -e " $Green     ||             $Purple==>$Yellow[8] Edit Configuration Files$Green                      "
+echo -e " $Green     ||             $Purple==>$Yellow[9] Enable FTP/SFTP Access$Green                      "
+echo -e " $Green     ||             $Purple==>$Yellow[10] Exit$Green                                           "
 echo -e " $Green     ||             $Purple==>$Yellow[999] Reset/Update Launcher$Green                                           "
 echo -e " $Green     ||                                                                   "                                                                                       
 echo -e " $Green     ||---------------------------$Cyan [select option] $Green-----------------------||"
@@ -71,6 +75,12 @@ if [ $ch -eq 1 ];then
     # Download Waterfall
     wget -O waterfall.jar https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/waterfall-*.jar
 
+    # Create plugins directory
+    mkdir plugins
+
+    # Download EaglerXBungee plugin
+    wget -O plugins/EaglerXBungee.jar https://hangar.papermc.io/Dhyey/EaglerXBungee/download/latest
+
     chmod +x waterfall.jar
     echo eula=true > eula.txt
 
@@ -78,6 +88,7 @@ if [ $ch -eq 1 ];then
     exit
 
 elif [ $ch -eq 2 ];then 
+    # Start the server
     while true
     do
         java -Xms4G -Xmx4G -jar waterfall.jar
@@ -125,11 +136,36 @@ elif [ $ch -eq 7 ];then
     A script for Termux that makes it possible to host a Minecraft server via your Android phone. This script requires Termux (Updated F-Droid Version) and a bit of time :)
     Install script and UP-Time script are made by M4T01.
     YOU CANNOT USE THIS ON ANDROID 11 - SORRY! \e[1;36m"
+    echo -e "$Green To add plugins, download the desired plugin .jar file and place it in the 'plugins' directory.$Reset"
     cd $HOME
     exit
 
-elif [ $ch -eq 9 ];then
-    $termux-open-url https://t.me/drmatoi
+elif [ $ch -eq 8 ]; then
+    # Open nano editor for configuration files
+    nano $HOME/drmatoi_minecrafthost/config.yml  # Replace with your actual config file name
+    exit
+
+elif [ $ch -eq 9 ]; then
+    # Enable FTP/SFTP
+    echo -e "$Green Enabling FTP/SFTP access...$Reset"
+    
+    # Configure vsftpd
+    echo "anonymous_enable=NO" >> /etc/vsftpd.conf
+    echo "local_enable=YES" >> /etc/vsftpd.conf
+    echo "write_enable=YES" >> /etc/vsftpd.conf
+    echo "chroot_local_user=YES" >> /etc/vsftpd.conf
+
+    # Start vsftpd service
+    service vsftpd start
+
+    echo -e "$Green FTP/SFTP is now enabled and running. You can connect using your FTP client.$Reset"
+    echo -e "$Cyan Use the following details to connect:"
+    echo -e "$Cyan Host: $(hostname -I | awk '{print $1}')"
+    echo -e "$Cyan Username: Your Termux username"
+    echo -e "$Cyan Password: Your Termux password"
+    exit
+
+elif [ $ch -eq 10 ]; then
     exit
 
 else
